@@ -97,7 +97,7 @@ Features are being implemented incrementally with a focus on code quality and be
 
 ## 🛣️ Roadmap
 
-- [ ] Login endpoint
+- [x] Login endpoint
 - [ ] Refresh token endpoint
 - [ ] Logout and token revocation
 - [ ] JWT middleware
