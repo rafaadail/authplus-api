@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthService
 {
@@ -17,10 +18,14 @@ class AuthService
             'password' => $data['password']
         ];
 
-        if(! Auth::attempt($credentials)) {
+        if(! $token = JWTAuth::attempt($credentials)) {
             throw new \Exception('Invalid credentials');
         }
 
-        return Auth::user()->toArray();
+        return [
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth('api')->factory()->getTTL() * 60,
+        ];
     }
 }
