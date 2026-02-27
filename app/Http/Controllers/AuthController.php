@@ -29,4 +29,22 @@ class AuthController extends Controller
             ], 401);
         }
     }
+
+    public function me()
+    {
+        try {
+            $user = auth()->user();
+            
+            return response()->json([
+                'success' => false, 
+                'data' => $user
+            ]);
+
+        } catch(\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 401);
+        }
+    }
 }
