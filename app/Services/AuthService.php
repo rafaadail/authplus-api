@@ -28,4 +28,9 @@ class AuthService
             'expires_in' => auth('api')->factory()->getTTL() * 60,
         ];
     }
+
+    public function me()
+    {
+        return auth()->user();
+    }
 }
