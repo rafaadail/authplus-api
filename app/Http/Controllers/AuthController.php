@@ -33,13 +33,30 @@ class AuthController extends Controller
     public function me()
     {
         try {
-            $user = auth()->user();
+            $user = $this->service->me();
             
             return response()->json([
                 'success' => false, 
                 'data' => $user
             ]);
 
+        } catch(\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 401);
+        }
+    }
+
+    public function refresh(Request $request)
+    {
+        try {
+            $refresh = $this->service->refresh($request->bearerToken());
+
+            return response()->json([
+                'success' => true,
+                'data' => $refresh
+            ]);
         } catch(\Exception $e) {
             return response()->json([
                 'success' => false,
