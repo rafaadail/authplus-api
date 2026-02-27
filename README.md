@@ -99,7 +99,7 @@ Features are being implemented incrementally with a focus on code quality and be
 
 - [x] Login endpoint
 - [x] Generate JWT
-- [ ] Refresh token endpoint
+- [x] Refresh token endpoint
 - [ ] Logout and token revocation
 - [ ] JWT middleware
 - [ ] Swagger documentation
