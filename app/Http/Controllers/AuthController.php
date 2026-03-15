@@ -64,4 +64,22 @@ class AuthController extends Controller
             ], 401);
         }
     }
+
+    public function logout(Request $request)
+    {
+        try {
+            $this->service->logout();
+
+            return response()->json([
+                'sucess' => true,
+                'message' => 'Success logged out'
+            ]);
+
+        } catch(\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 401);
+        }
+    }
 }

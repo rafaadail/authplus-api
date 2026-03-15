@@ -80,4 +80,8 @@ class AuthService
         ];
     }
 
+    public function logout()
+    {
+        return auth('api')->logout();
+    }
 }
