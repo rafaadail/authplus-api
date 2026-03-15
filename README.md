@@ -101,7 +101,7 @@ Features are being implemented incrementally with a focus on code quality and be
 - [x] Generate JWT
 - [x] Refresh token endpoint
 - [x] Logout and token revocation
-- [ ] JWT middleware
+- [x] JWT middleware
 - [ ] Swagger documentation
 - [ ] Structured logging improvements
 - [ ] Rate limiting
