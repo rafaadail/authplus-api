@@ -86,6 +86,14 @@ The project focuses on API best practices, token-based authentication, observabi
 
 ---
 
+## Observability
+
+- Grafana dashboard
+- Loki log aggregation
+- Promtail log shipping
+
+---
+
 ## 📌 Project Status
 
 🚧 **In progress**
@@ -103,7 +111,7 @@ Features are being implemented incrementally with a focus on code quality and be
 - [x] Logout and token revocation
 - [x] JWT middleware
 - [ ] Swagger documentation
-- [ ] Structured logging improvements
+- [x] Structured logging improvements
 - [ ] Rate limiting
 - [ ] Test coverage improvements
 - [ ] Docker Compose setup

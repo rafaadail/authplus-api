@@ -34,13 +34,12 @@ class AuthController extends Controller
     {
         try {
             $user = $this->service->me();
-            
+
             return response()->json([
-                'success' => false, 
+                'success' => true,
                 'data' => $user
             ]);
-
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()
@@ -57,7 +56,12 @@ class AuthController extends Controller
                 'success' => true,
                 'data' => $refresh
             ]);
-        } catch(\Exception $e) {
+        } catch (\InvalidArgumentException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 400);
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()

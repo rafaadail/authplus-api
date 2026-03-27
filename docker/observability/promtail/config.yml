@@ -1,0 +1,32 @@
+server:
+  http_listen_port: 9080
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: laravel
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: laravel
+          app: authplus
+          __path__: /var/log/*.log
+
+    pipeline_stages:
+      # 1. Parse JSON do Laravel
+      - json:
+          expressions:
+            level: level_name
+            message: message
+            event: context.event
+            endpoint: context.endpoint
+
+      # 2. Transformar em labels
+      - labels:
+          level:
+          event:
