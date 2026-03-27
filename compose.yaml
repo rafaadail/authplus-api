@@ -23,6 +23,7 @@ services:
             - sail
         depends_on:
             - mysql
+
     mysql:
         image: 'mysql:8.4'
         ports:
@@ -41,16 +42,43 @@ services:
         networks:
             - sail
         healthcheck:
-            test:
-                - CMD
-                - mysqladmin
-                - ping
-                - '-p${DB_PASSWORD}'
+            test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
             retries: 3
             timeout: 5s
+
+    grafana:
+        image: grafana/grafana:latest
+        ports:
+            - "3000:3000"
+        volumes:
+            - grafana-storage:/var/lib/grafana
+        networks:
+            - sail
+
+    loki:
+        image: grafana/loki:latest
+        platform: linux/amd64
+        ports:
+            - "3100:3100"
+        command: -config.file=/etc/loki/local-config.yaml
+        networks:
+            - sail
+
+    promtail:
+        image: grafana/promtail:latest
+        platform: linux/amd64
+        volumes:
+            - ./storage/logs:/var/log
+            - ./docker/observability/promtail/:/etc/promtail/   
+        command: -config.file=/etc/promtail/config.yml
+        networks:
+            - sail
+
 networks:
     sail:
         driver: bridge
+
 volumes:
     sail-mysql:
         driver: local
+    grafana-storage:
