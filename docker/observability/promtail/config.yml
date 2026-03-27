@@ -14,4 +14,19 @@ scrape_configs:
           - localhost
         labels:
           job: laravel
+          app: authplus
           __path__: /var/log/*.log
+
+    pipeline_stages:
+      # 1. Parse JSON do Laravel
+      - json:
+          expressions:
+            level: level_name
+            message: message
+            event: context.event
+            endpoint: context.endpoint
+
+      # 2. Transformar em labels
+      - labels:
+          level:
+          event:
