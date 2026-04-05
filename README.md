@@ -110,7 +110,7 @@ Features are being implemented incrementally with a focus on code quality and be
 - [x] Refresh token endpoint
 - [x] Logout and token revocation
 - [x] JWT middleware
-- [ ] Swagger documentation
+- [x] Swagger documentation
 - [x] Structured logging improvements
 - [ ] Rate limiting
 - [ ] Test coverage improvements
