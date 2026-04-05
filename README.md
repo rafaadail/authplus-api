@@ -112,7 +112,7 @@ Features are being implemented incrementally with a focus on code quality and be
 - [x] JWT middleware
 - [x] Swagger documentation
 - [x] Structured logging improvements
-- [ ] Rate limiting
+- [x] Rate limiting
 - [ ] Test coverage improvements
 - [ ] Docker Compose setup
 
