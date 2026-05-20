@@ -114,7 +114,7 @@ Features are being implemented incrementally with a focus on code quality and be
 - [x] Structured logging improvements
 - [x] Rate limiting
 - [ ] Test coverage improvements
-- [ ] Docker Compose setup
+- [x] Docker Compose setup
 
 ---
 
