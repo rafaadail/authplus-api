@@ -70,14 +70,14 @@ class LoginTest extends TestCase
         $response
             ->assertStatus(422)
             ->assertJsonStructure([
-                'error',
+                'success',
                 'message',
                 'errors',
             ]);
 
         $json = $response->json();
 
-        $this->assertEquals(1, $json['error']);
+        $this->assertEquals(false, $json['success']);
         $this->assertContains('The email field is required.', $json['errors']);
         $this->assertContains('The password field is required.', $json['errors']);
     }
@@ -92,7 +92,7 @@ class LoginTest extends TestCase
             $response
                 ->assertStatus(422)
                 ->assertJsonStructure([
-                    'error',
+                    'success',
                     'message',
                     'errors',
                 ]);
@@ -107,14 +107,14 @@ class LoginTest extends TestCase
             $response
                 ->assertStatus(422)
                 ->assertJsonStructure([
-                    'error',
+                    'success',
                     'message',
                     'errors',
                 ]);
 
             $json = $response->json();
 
-            $this->assertEquals(1, $json['error']);
+            $this->assertEquals(false, $json['success']);
 
             $this->assertContains(
                 'The email field is required.',
@@ -134,14 +134,14 @@ class LoginTest extends TestCase
             $response
                 ->assertStatus(422)
                 ->assertJsonStructure([
-                    'error',
+                    'success',
                     'message',
                     'errors',
                 ]);
 
             $json = $response->json();
 
-            $this->assertEquals(1, $json['error']);
+            $this->assertEquals(false, $json['success']);
 
             $this->assertContains(
                 'The password field is required.',
@@ -159,14 +159,14 @@ class LoginTest extends TestCase
             $response
                 ->assertStatus(422)
                 ->assertJsonStructure([
-                    'error',
+                    'success',
                     'message',
                     'errors',
                 ]);
 
             $json = $response->json();
 
-            $this->assertEquals(1, $json['error']);
+            $this->assertEquals(false, $json['success']);
 
             $this->assertContains(
                 'The email field must be a valid email address.',

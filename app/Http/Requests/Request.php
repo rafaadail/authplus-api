@@ -24,7 +24,7 @@ class Request extends FormRequest
         }
 
         throw new HttpResponseException(response()->json([
-        "error" => 1,
+        "success" => false,
         "message" => $message,
         'errors' => $validator->errors()->all(),
         ], 422));
