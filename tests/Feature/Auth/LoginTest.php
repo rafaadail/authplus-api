@@ -20,7 +20,7 @@ class LoginTest extends TestCase
             'password' => bcrypt('password')
         ]);
         
-        $response = $this->postJson('http://127.0.0.1/api/auth/login', [
+        $response = $this->postJson('/api/auth/login', [
             'email' => $user->email,
             'password' => 'password'
         ]);
@@ -44,7 +44,7 @@ class LoginTest extends TestCase
             'password' => bcrypt('password')
         ]);
 
-        $response = $this->postJson('http://127.0.0.1/api/auth/login', [
+        $response = $this->postJson('/api/auth/login', [
             'email' => $user->email,
             'password' => 'wrong-password',
         ]);
@@ -63,7 +63,7 @@ class LoginTest extends TestCase
             'password' => bcrypt('password')
         ]);
 
-        $response = $this->postJson('http://127.0.0.1/api/auth/login', [
+        $response = $this->postJson('/api/auth/login', [
             // No email or password
         ]);
 
@@ -84,7 +84,7 @@ class LoginTest extends TestCase
 
         public function test_login_fails_with_invalid_email_format(): void
         {
-            $response = $this->postJson('http://127.0.0.1/api/auth/login', [
+            $response = $this->postJson('/api/auth/login', [
                 'email' => 'invalid-email',
                 'password' => 'password'
             ]);
@@ -100,7 +100,7 @@ class LoginTest extends TestCase
 
         public function test_login_requires_email(): void
         {
-            $response = $this->postJson('http://127.0.0.1/api/auth/login', [
+            $response = $this->postJson('/api/auth/login', [
                 'password' => 'password',
             ]);
 
@@ -127,7 +127,7 @@ class LoginTest extends TestCase
             $user = User::factory()->create([
                 'password' => bcrypt('password')
             ]);
-            $response = $this->postJson('http://127.0.0.1/api/auth/login', [
+            $response = $this->postJson('/api/auth/login', [
                 'email' => $user->email,
             ]);
 
@@ -151,7 +151,7 @@ class LoginTest extends TestCase
 
         public function test_login_requires_valid_email_format(): void
         {
-            $response = $this->postJson('http://127.0.0.1/api/auth/login', [
+            $response = $this->postJson('/api/auth/login', [
                 'email' => 'email-invalido',
                 'password' => 'password',
             ]);

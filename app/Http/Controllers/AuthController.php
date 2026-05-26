@@ -210,7 +210,7 @@ class AuthController extends Controller
             $this->service->logout();
 
             return response()->json([
-                'sucess' => true,
+                'success' => true,
                 'message' => 'Success logged out'
             ]);
 
