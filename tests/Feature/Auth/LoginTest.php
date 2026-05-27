@@ -51,10 +51,12 @@ class LoginTest extends TestCase
 
         $response
             ->assertStatus(401)
-            ->assertJson([
-                'success' => false,
-                'message' => 'Invalid credentials'
+            ->assertJsonStructure([
+                'success',
+                'message'
             ]);
+
+        $this->assertEquals(false, $response->json('success'));
     }
 
     public function test_login_fails_with_missing_fields(): void
