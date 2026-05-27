@@ -7,6 +7,7 @@ use App\Services\AuthService;
 
 use App\Http\Requests\LoginRequest;
 use OpenApi\Attributes as OA;
+use App\Helpers\ApiResponse;
 
 class AuthController extends Controller
 {
@@ -55,16 +56,11 @@ class AuthController extends Controller
 
             $user = $this->service->login($request->validated());
 
-            return response()->json([
-                'success' => true,
-                'data' => $user
-            ]);
+            return ApiResponse::success($user, 'Login successful.');
 
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 401);
+
+            return ApiResponse::error($e->getMessage(), 401);
         }
     }
 
@@ -101,16 +97,9 @@ class AuthController extends Controller
     {
         try {
             $user = $this->service->me();
-
-            return response()->json([
-                'success' => true,
-                'data' => $user
-            ]);
+            return ApiResponse::success($user, 'User information retrieved successfully.');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 401);
+            return ApiResponse::error($e->getMessage(), 401);
         }
     }
 
@@ -158,20 +147,15 @@ class AuthController extends Controller
         try {
             $refresh = $this->service->refresh($request->bearerToken());
 
-            return response()->json([
-                'success' => true,
-                'data' => $refresh
-            ]);
+            return ApiResponse::success($refresh, 'Token refreshed successfully.');
+            
         } catch (\InvalidArgumentException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 400);
+
+            return ApiResponse::error($e->getMessage(), 400);
+            
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 401);
+            
+            return ApiResponse::error($e->getMessage(), 401);
         }
     }
 
@@ -209,16 +193,10 @@ class AuthController extends Controller
         try {
             $this->service->logout();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Success logged out'
-            ]);
-
+            return ApiResponse::success(null, 'Success logged out.');
+            
         } catch(\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 401);
+            return ApiResponse::error($e->getMessage(), 401);
         }
     }
 }
