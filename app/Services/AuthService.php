@@ -7,6 +7,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Log;
+use App\Exceptions\InvalidCredentialsException;
 
 class AuthService
 {
@@ -25,7 +26,7 @@ class AuthService
                 'endpoint' => '/auth/login'
             ]);
 
-            throw new \Exception('Invalid credentials');
+            throw new InvalidCredentialsException('Invalid credentials');
         }
 
         $this->logger->logInfo('auth.login.success', 'User logged in successfully', [

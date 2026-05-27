@@ -52,16 +52,9 @@ class AuthController extends Controller
     )]
     public function login(LoginRequest $request)
     {
-        try {
+        $user = $this->service->login($request->validated());
 
-            $user = $this->service->login($request->validated());
-
-            return ApiResponse::success($user, 'Login successful.');
-
-        } catch (\Exception $e) {
-
-            return ApiResponse::error($e->getMessage(), 401);
-        }
+        return ApiResponse::success($user, 'Login successful.');
     }
 
     #[OA\Get(
@@ -95,12 +88,8 @@ class AuthController extends Controller
     )]
     public function me()
     {
-        try {
-            $user = $this->service->me();
-            return ApiResponse::success($user, 'User information retrieved successfully.');
-        } catch (\Exception $e) {
-            return ApiResponse::error($e->getMessage(), 401);
-        }
+        $user = $this->service->me();
+        return ApiResponse::success($user, 'User information retrieved successfully.');
     }
 
     #[OA\Post(
@@ -144,19 +133,9 @@ class AuthController extends Controller
     )]
     public function refresh(Request $request)
     {
-        try {
-            $refresh = $this->service->refresh($request->bearerToken());
+        $refresh = $this->service->refresh($request->bearerToken());
 
-            return ApiResponse::success($refresh, 'Token refreshed successfully.');
-            
-        } catch (\InvalidArgumentException $e) {
-
-            return ApiResponse::error($e->getMessage(), 400);
-            
-        } catch (\Exception $e) {
-            
-            return ApiResponse::error($e->getMessage(), 401);
-        }
+        return ApiResponse::success($refresh, 'Token refreshed successfully.');
     }
 
     #[OA\Post(
@@ -190,13 +169,8 @@ class AuthController extends Controller
     )]
     public function logout(Request $request)
     {
-        try {
-            $this->service->logout();
+        $this->service->logout();
 
-            return ApiResponse::success(null, 'Success logged out.');
-            
-        } catch(\Exception $e) {
-            return ApiResponse::error($e->getMessage(), 401);
-        }
+        return ApiResponse::success(null, 'Success logged out.');
     }
 }

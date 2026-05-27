@@ -5,6 +5,12 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
+use Illuminate\Validation\ValidationException;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
+use App\Exceptions\InvalidCredentialsException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -20,6 +26,18 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         
+        $exceptions->render(function (ValidationException $e, $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation Failed.',
+                    'errors' => collect($e->errors())
+                        ->flatten()
+                        ->values(),
+                ], 422);
+            }
+        });
+
         $exceptions->render(function (AuthenticationException $e, $request) {
             $request->headers->set('Accept', 'application/json');
             return response()->json([
@@ -46,6 +64,50 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
+        $exceptions->render(function (JWTException $e, $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid token.',
+                ], 401);
+            }
+        });
+
+        $exceptions->render(function (TokenExpiredException $e, $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Token has expired. Please log in again.',
+                ], 401);
+            }
+        });
+
+        $exceptions->render(function (NotFoundHttpException $e, $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Resource not found.',
+                ], 404);
+            }
+        });
+
+        $exceptions->render(function (TooManyRequestsHttpException $e, $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Too Many Requests. Please try again later.',
+                ], 429);
+            }
+        });
+
+        $exceptions->render(function (InvalidCredentialsException $e, $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ], 401);
+            }
+        });
 
         $exceptions->render(function (\Throwable $e, $request) {
 
@@ -64,4 +126,5 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], $status);
             }
         });
+            
     })->create();
