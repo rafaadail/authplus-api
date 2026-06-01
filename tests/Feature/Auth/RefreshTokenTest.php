@@ -43,18 +43,31 @@ class RefreshTokenTest extends TestCase
         $this->assertEquals(true, $response->json('success'));
     }
 
-        public function test_refresh_token_fails_with_invalid_token(): void
-        {
-            $response = $this->withHeaders([
-                'Authorization' => 'Bearer invalid-token'
-            ])->postJson('/api/auth/refresh');
+    public function test_refresh_token_fails_with_invalid_token(): void
+    {
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer invalid-token'
+        ])->postJson('/api/auth/refresh');
 
-            $response->assertStatus(401)
-                ->assertJsonStructure([
-                    'success',
-                    'message'
-                ]);
+        $response->assertStatus(401)
+            ->assertJsonStructure([
+                'success',
+                'message'
+            ]);
 
-            $this->assertEquals(false, $response->json('success'));
-        }
+        $this->assertEquals(false, $response->json('success'));
+    }
+
+    public function test_refresh_requires_authorization_token(): void
+    {
+        $response = $this->postJson('/api/auth/refresh');
+
+        $response->assertStatus(401)
+            ->assertJsonStructure([
+                'success',
+                'message'
+            ]);
+
+        $this->assertEquals(false, $response->json('success'));
+    }
 }
