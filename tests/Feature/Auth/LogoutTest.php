@@ -50,4 +50,36 @@ class LogoutTest extends TestCase
 
         $this->assertEquals(false, $response->json('success'));
     }
+
+    public function test_user_cannot_access_me_after_logout(): void
+    {
+        $user = User::factory()->create([
+            'password' => bcrypt('password')
+        ]);
+
+        $responseLogin = $this->postJson('/api/auth/login', [
+            'email' => $user->email,
+            'password' => 'password'
+        ]);
+
+        $token = $responseLogin->json('data.access_token');
+
+        $this->withToken($token)
+            ->post('/api/auth/logout')
+            ->assertStatus(200);
+
+        // $this->withHeaders([
+        //     'Authorization' => 'Bearer ' . $token
+        // ])->post('/api/auth/logout');
+
+        $responseMe = $this->withToken($token)->getJson('/api/auth/me');
+
+        $responseMe->assertStatus(401)
+            ->assertJsonStructure([
+                'success',
+                'message'
+            ]);
+
+        $this->assertEquals(false, $responseMe->json('success'));
+    }
 }
