@@ -11,6 +11,8 @@ use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use App\Exceptions\InvalidCredentialsException;
+use App\Exceptions\RefreshTokenRequiredException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -100,12 +102,30 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
+        $exceptions->render(function (RefreshTokenRequiredException $e, $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Refresh token required.',
+                ], 401);
+            }
+        }); 
+
         $exceptions->render(function (InvalidCredentialsException $e, $request) {
             if ($request->is('api/*')) {
                 return response()->json([
                     'success' => false,
                     'message' => $e->getMessage(),
                 ], 401);
+            }
+        });
+
+        $exceptions->render(function (MethodNotAllowedHttpException $e, $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Method Not Allowed.',
+                ], 405);
             }
         });
 

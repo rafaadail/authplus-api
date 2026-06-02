@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Log;
 use App\Exceptions\InvalidCredentialsException;
+use App\Exceptions\RefreshTokenRequiredException;
 
 class AuthService
 {
@@ -66,7 +67,7 @@ class AuthService
                 'endpoint' => '/auth/refresh'
             ]);
 
-            throw new \InvalidArgumentException('Refresh token required');
+            throw new RefreshTokenRequiredException('Refresh token required');
         }
 
         $payload = auth()->setToken($token)->getPayload();
