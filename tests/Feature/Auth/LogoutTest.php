@@ -43,12 +43,11 @@ class LogoutTest extends TestCase
         $response = $this->post('/api/auth/logout');
 
         $response->assertStatus(401)
-            ->assertJsonStructure([
-                'success',
-                'message'
-            ]);
+            ->assertJson([
+               'success' => false,
+                'message' => 'Unauthenticated.',
 
-        $this->assertEquals(false, $response->json('success'));
+            ]);
     }
 
     public function test_user_cannot_access_me_after_logout(): void
@@ -68,9 +67,6 @@ class LogoutTest extends TestCase
             ->post('/api/auth/logout')
             ->assertStatus(200);
 
-        // $this->withHeaders([
-        //     'Authorization' => 'Bearer ' . $token
-        // ])->post('/api/auth/logout');
 
         $responseMe = $this->withToken($token)->getJson('/api/auth/me');
 
