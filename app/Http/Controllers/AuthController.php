@@ -8,6 +8,10 @@ use App\Services\AuthService;
 use App\Http\Requests\LoginRequest;
 use OpenApi\Attributes as OA;
 use App\Helpers\ApiResponse;
+use App\Swagger\Schemas\ErrorResponseSchema;
+use App\Swagger\Schemas\SuccessResponseSchema;
+use App\Swagger\Schemas\LoginResponseSchema;
+use App\Swagger\Schemas\UserResponseSchema;
 
 class AuthController extends Controller
 {
@@ -33,19 +37,28 @@ class AuthController extends Controller
                 description: 'Successful login',
                 content: new OA\JsonContent(
                     properties: [
-                        new OA\Property(property: 'success', type: 'boolean'),
-                        new OA\Property(property: 'data', type: 'object')
+                        new OA\Property(
+                            property: 'success',
+                            type: 'boolean',
+                            example: true
+                        ),
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: 'Login successful.'
+                        ),
+                        new OA\Property(
+                            property: 'data',
+                            ref: '#/components/schemas/LoginResponse'
+                        )
                     ]
                 )
             ),
             new OA\Response(
-                response: 400,
+                response: 401,
                 description: 'Unauthorized',
                 content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'success', type: 'boolean'),
-                        new OA\Property(property: 'message', type: 'string')
-                    ]
+                    ref: '#/components/schemas/ErrorResponse'
                 )
             )
         ]
@@ -69,8 +82,20 @@ class AuthController extends Controller
                 description: 'Successful retrieval of user information',
                 content: new OA\JsonContent(
                     properties: [
-                        new OA\Property(property: 'success', type: 'boolean'),
-                        new OA\Property(property: 'data', type: 'object')
+                        new OA\Property(
+                            property: 'success',
+                            type: 'boolean',
+                            example: true
+                        ),
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: 'Login successful.'
+                        ),
+                        new OA\Property(
+                            property: 'data',
+                            ref: '#/components/schemas/UserResponse'
+                        )
                     ]
                 )
             ),
@@ -78,10 +103,7 @@ class AuthController extends Controller
                 response: 401,
                 description: 'Unauthorized',
                 content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'success', type: 'boolean'),
-                        new OA\Property(property: 'message', type: 'string')
-                    ]
+                    ref: '#/components/schemas/ErrorResponse'
                 )
             )
         ]
@@ -104,8 +126,20 @@ class AuthController extends Controller
                 description: 'Successful token refresh',
                 content: new OA\JsonContent(
                     properties: [
-                        new OA\Property(property: 'success', type: 'boolean'),
-                        new OA\Property(property: 'data', type: 'object')
+                        new OA\Property(
+                            property: 'success',
+                            type: 'boolean',
+                            example: true
+                        ),
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: 'Login successful.'
+                        ),
+                        new OA\Property(
+                            property: 'data',
+                            ref: '#/components/schemas/LoginResponse'
+                        )
                     ]
                 )
             ),
@@ -113,20 +147,14 @@ class AuthController extends Controller
                 response: 400,
                 description: 'Bad request',
                 content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'success', type: 'boolean'),
-                        new OA\Property(property: 'message', type: 'string')
-                    ]
+                    ref: '#/components/schemas/ErrorResponse'
                 )
             ),
             new OA\Response(
                 response: 401,
                 description: 'Unauthorized',
                 content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'success', type: 'boolean'),
-                        new OA\Property(property: 'message', type: 'string')
-                    ]
+                    ref: '#/components/schemas/ErrorResponse'
                 )
             )
         ]      
@@ -149,20 +177,14 @@ class AuthController extends Controller
                 response: 200,
                 description: 'Successful logout',
                 content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'success', type: 'boolean'),
-                        new OA\Property(property: 'message', type: 'string')
-                    ]
+                    ref: '#/components/schemas/SuccessResponse'
                 )
             ),
             new OA\Response(
                 response: 401,
                 description: 'Unauthorized',
                 content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'success', type: 'boolean'),
-                        new OA\Property(property: 'message', type: 'string')
-                    ]
+                    ref: '#/components/schemas/ErrorResponse'
                 )
             )
         ]  
@@ -171,6 +193,6 @@ class AuthController extends Controller
     {
         $this->service->logout();
 
-        return ApiResponse::success(null, 'Success logged out.');
+        return ApiResponse::success([], 'Success logged out.');
     }
 }
