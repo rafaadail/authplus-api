@@ -175,4 +175,22 @@ class LoginTest extends TestCase
                 $json['errors']
             );
         }
+
+
+    public function test_login_is_rate_limited(): void
+    {
+        for ($i = 0; $i < 6; $i++) {
+
+            $response = $this->postJson('/api/auth/login', [
+                'email' => 'invalid@example.com',
+                'password' => 'invalid-password',
+            ]);
+        }
+
+        $response
+            ->assertStatus(429)
+            ->assertJson([
+                'success' => false,
+            ]);
+    }
 }
