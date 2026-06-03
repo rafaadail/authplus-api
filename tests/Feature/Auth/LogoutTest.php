@@ -9,6 +9,7 @@ use App\Models\User;
 
 class LogoutTest extends TestCase
 {
+    use RefreshDatabase;
     /**
      * A basic feature test example.
      */
