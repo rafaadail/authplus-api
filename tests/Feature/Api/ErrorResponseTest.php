@@ -9,6 +9,8 @@ use App\Models\User;
 
 class ErrorResponseTest extends TestCase
 {
+    use RefreshDatabase;
+    
     public function test_returns_not_for_invalid_route(): void
     {
         $response = $this->getJson('/api/invalid-route');

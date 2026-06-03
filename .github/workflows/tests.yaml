@@ -20,7 +20,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.4
+          php-version: 8.5
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-interaction
@@ -31,5 +31,8 @@ jobs:
       - name: Generate key
         run: php artisan key:generate
 
+      - name: Run JWT Secret
+        run: php artisan jwt:secret
+       
       - name: Run tests
         run: php artisan test
