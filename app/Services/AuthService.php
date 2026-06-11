@@ -85,31 +85,45 @@ class AuthService
             throw new \Exception('Invalid token type');
         }
 
-        $user = auth('api')->setToken($token)->authenticate();
-        $newAccessToken = auth('api')->login($user);
+        /** @var \Tymon\JWTAuth\JWTGuard $guard */
+        $guard = auth('api');
 
+        /** @var \Tymon\JWTAuth\Contracts\JWTSubject $user */
+        $user = $guard->setToken($token)->authenticate();
+       
+        $newAccessToken = $guard->login($user);
 
-        if($newAccessToken === false) {
+        if(!$newAccessToken) {
             throw new InvalidCredentialsException('Invalid credentials');
         }
 
+        /** @var string $newAccessToken */
         return $this->buildTokenResponse($newAccessToken, $user);
     }
 
-    
+    /**
+     * @return array{
+     *     access_token: string,
+     *     refresh_token: string,
+     *     token_type: string,
+     *     expires_in: int
+     * }
+     */
     private function buildTokenResponse(string $accessToken, $user): array
     {
         try {
-            $refreshToken = auth('api')
-            ->setTTL(60 * 24 * 7)
-            ->claims(['type' => 'refresh'])
-            ->fromUser($user);
+            /** @var \Tymon\JWTAuth\JWTGuard $guard */
+            $guard = auth('api');
+
+            $guard->setTTL(60 * 24 * 7);
+
+            $refreshToken = JWTAuth::claims(['type' => 'refresh'])->fromUser($user);
 
             return [
                 'access_token' => $accessToken,
                 'refresh_token' => $refreshToken,
                 'token_type' => 'bearer',
-                'expires_in' => auth('api')->factory()->getTTL() * 60
+                'expires_in' => $guard->factory()->getTTL() * 60
             ];
         
         } catch(\Exception $e) {
