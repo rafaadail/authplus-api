@@ -21,7 +21,9 @@ class AuthService
             'password' => $data['password']
         ];
 
-        if(! $accessToken = auth('api')->attempt($credentials)) {
+        $accessToken = auth('api')->attempt($credentials);
+
+        if(! $accessToken) {
 
             $this->logger->logError('auth.login.error', 'Invalid credentials', [
                 'endpoint' => '/auth/login'
@@ -35,6 +37,9 @@ class AuthService
             'user_email' => $data['email']
         ]);
         
+
+        /** @var string $accessToken */
+
         return $this->buildTokenResponse($accessToken, auth('api')->user());
     }
 
@@ -83,9 +88,15 @@ class AuthService
         $user = auth('api')->setToken($token)->authenticate();
         $newAccessToken = auth('api')->login($user);
 
+
+        if($newAccessToken === false) {
+            throw new InvalidCredentialsException('Invalid credentials');
+        }
+
         return $this->buildTokenResponse($newAccessToken, $user);
     }
 
+    
     private function buildTokenResponse(string $accessToken, $user): array
     {
         try {
