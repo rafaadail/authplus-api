@@ -10,7 +10,4 @@ use OpenApi\Attributes as OA;
     description: 'Authentication API'
 )]
 
-
-class OpenApi
-{
-}
+class OpenApi {}

@@ -17,9 +17,7 @@ use OpenApi\Attributes as OA;
             property: 'message',
             type: 'string',
             example: 'Invalid credentials'
-        )
+        ),
     ]
 )]
-class ErrorResponseSchema
-{
-}
+class ErrorResponseSchema {}

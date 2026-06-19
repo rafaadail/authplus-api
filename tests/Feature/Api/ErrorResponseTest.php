@@ -2,15 +2,14 @@
 
 namespace Tests\Feature\Api;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class ErrorResponseTest extends TestCase
 {
     use RefreshDatabase;
-    
+
     public function test_returns_not_for_invalid_route(): void
     {
         $response = $this->getJson('/api/invalid-route');
@@ -28,7 +27,7 @@ class ErrorResponseTest extends TestCase
 
         $response->assertStatus(405)
             ->assertJson([
-                'success' => false
+                'success' => false,
             ]);
     }
 
@@ -36,12 +35,12 @@ class ErrorResponseTest extends TestCase
     {
 
         $user = User::factory()->create([
-            'password' => bcrypt('password')
+            'password' => bcrypt('password'),
         ]);
 
         $responseLogin = $this->postJson('/api/auth/login', [
             'email' => $user->email,
-            'password' => 'password'
+            'password' => 'password',
         ]);
 
         $token = $responseLogin->json('data.access_token');

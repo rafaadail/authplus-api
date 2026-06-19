@@ -1,18 +1,19 @@
 <?php
 
+use App\Exceptions\InvalidCredentialsException;
+use App\Exceptions\RefreshTokenRequiredException;
+use App\Http\Middleware\Authenticate;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Validation\ValidationException;
-use Tymon\JWTAuth\Exceptions\JWTException;
-use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
-use App\Exceptions\InvalidCredentialsException;
-use App\Exceptions\RefreshTokenRequiredException;
-use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -23,11 +24,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'auth' => \App\Http\Middleware\Authenticate::class
+            'auth' => Authenticate::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        
+
         $exceptions->render(function (ValidationException $e, $request) {
             if ($request->is('api/*')) {
                 return response()->json([
@@ -42,9 +43,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (AuthenticationException $e, $request) {
             $request->headers->set('Accept', 'application/json');
+
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthenticated.'
+                'message' => 'Unauthenticated.',
             ], 401);
         });
 
@@ -109,7 +111,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     'message' => 'Refresh token required.',
                 ], 401);
             }
-        }); 
+        });
 
         $exceptions->render(function (InvalidCredentialsException $e, $request) {
             if ($request->is('api/*')) {
@@ -129,7 +131,7 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
-        $exceptions->render(function (\Throwable $e, $request) {
+        $exceptions->render(function (Throwable $e, $request) {
 
             if ($request->is('api/*')) {
 
@@ -146,5 +148,5 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], $status);
             }
         });
-            
+
     })->create();

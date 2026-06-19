@@ -28,7 +28,7 @@ class GenerateOpenApi extends Command
     {
         $this->info('Generating OpenAPI documentation...');
 
-        $generator = new Generator();
+        $generator = new Generator;
 
         $openApi = $generator->generate([
             app_path('Http/Controllers'),
