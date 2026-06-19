@@ -2,26 +2,26 @@
 
 namespace Tests\Feature\Auth;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class MeTest extends TestCase
 {
     use RefreshDatabase;
+
     /**
      * A basic feature test example.
      */
     public function test_authenticated_user_can_get_profile(): void
     {
         $user = User::factory()->create([
-            'password' => bcrypt('password')
+            'password' => bcrypt('password'),
         ]);
 
         $responseLogin = $this->postJson('/api/auth/login', [
             'email' => $user->email,
-            'password' => 'password'
+            'password' => 'password',
         ]);
 
         $responseLogin = $this->postJson('/api/auth/login', [
@@ -42,10 +42,10 @@ class MeTest extends TestCase
                     'name',
                     'email',
                     'created_at',
-                    'updated_at'
-                ]
+                    'updated_at',
+                ],
             ]);
-        
+
         $this->assertEquals(true, $response->json('success'));
         $this->assertEquals($user->email, $response->json('data.email'));
     }
@@ -57,7 +57,7 @@ class MeTest extends TestCase
         $response->assertStatus(401)
             ->assertJsonStructure([
                 'success',
-                'message'
+                'message',
             ]);
 
         $this->assertEquals(false, $response->json('success'));
@@ -66,14 +66,14 @@ class MeTest extends TestCase
     public function test_user_cannot_get_profile_with_invalid_token(): void
     {
         $response = $this->withToken('invalid-token')
-            ->getJson('/api/auth/me'); 
+            ->getJson('/api/auth/me');
 
         $response->assertStatus(401)
             ->assertJsonStructure([
                 'success',
-                'message'
+                'message',
             ]);
-        
+
         $this->assertEquals(false, $response->json('success'));
     }
 }

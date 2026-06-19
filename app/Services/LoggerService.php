@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Log;
 
 class LoggerService
 {
-    public function __construct(){}
+    public function __construct() {}
 
     public function logInfo(string $event, string $message, array $context = [])
     {
@@ -22,7 +22,6 @@ class LoggerService
     {
         Log::critical($message, array_merge(['event' => $event], $context));
     }
-
 
     public function logWarning(string $event, string $message, array $context = [])
     {
