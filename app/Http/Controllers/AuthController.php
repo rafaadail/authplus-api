@@ -2,20 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Services\AuthService;
-
-use App\Http\Requests\LoginRequest;
-use OpenApi\Attributes as OA;
 use App\Helpers\ApiResponse;
-use App\Swagger\Schemas\ErrorResponseSchema;
-use App\Swagger\Schemas\SuccessResponseSchema;
-use App\Swagger\Schemas\LoginResponseSchema;
-use App\Swagger\Schemas\UserResponseSchema;
+use App\Http\Requests\LoginRequest;
+use App\Services\AuthService;
+use Illuminate\Http\Request;
+use OpenApi\Attributes as OA;
 
 class AuthController extends Controller
 {
-    public function __construct(private AuthService $service) { }
+    public function __construct(private AuthService $service) {}
 
     #[OA\Post(
         path: '/api/auth/login',
@@ -27,7 +22,7 @@ class AuthController extends Controller
             content: new OA\JsonContent(
                 properties: [
                     new OA\Property(property: 'email', type: 'string', format: 'email'),
-                    new OA\Property(property: 'password', type: 'string', format: 'password')
+                    new OA\Property(property: 'password', type: 'string', format: 'password'),
                 ]
             )
         ),
@@ -50,7 +45,7 @@ class AuthController extends Controller
                         new OA\Property(
                             property: 'data',
                             ref: '#/components/schemas/LoginResponse'
-                        )
+                        ),
                     ]
                 )
             ),
@@ -60,7 +55,7 @@ class AuthController extends Controller
                 content: new OA\JsonContent(
                     ref: '#/components/schemas/ErrorResponse'
                 )
-            )
+            ),
         ]
     )]
     public function login(LoginRequest $request)
@@ -95,7 +90,7 @@ class AuthController extends Controller
                         new OA\Property(
                             property: 'data',
                             ref: '#/components/schemas/UserResponse'
-                        )
+                        ),
                     ]
                 )
             ),
@@ -105,12 +100,13 @@ class AuthController extends Controller
                 content: new OA\JsonContent(
                     ref: '#/components/schemas/ErrorResponse'
                 )
-            )
+            ),
         ]
     )]
     public function me()
     {
         $user = $this->service->me();
+
         return ApiResponse::success($user, 'User information retrieved successfully.');
     }
 
@@ -139,7 +135,7 @@ class AuthController extends Controller
                         new OA\Property(
                             property: 'data',
                             ref: '#/components/schemas/LoginResponse'
-                        )
+                        ),
                     ]
                 )
             ),
@@ -156,8 +152,8 @@ class AuthController extends Controller
                 content: new OA\JsonContent(
                     ref: '#/components/schemas/ErrorResponse'
                 )
-            )
-        ]      
+            ),
+        ]
     )]
     public function refresh(Request $request)
     {
@@ -186,8 +182,8 @@ class AuthController extends Controller
                 content: new OA\JsonContent(
                     ref: '#/components/schemas/ErrorResponse'
                 )
-            )
-        ]  
+            ),
+        ]
     )]
     public function logout(Request $request)
     {

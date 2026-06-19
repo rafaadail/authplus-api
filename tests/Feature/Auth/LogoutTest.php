@@ -2,36 +2,36 @@
 
 namespace Tests\Feature\Auth;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class LogoutTest extends TestCase
 {
     use RefreshDatabase;
+
     /**
      * A basic feature test example.
      */
     public function test_user_can_logout(): void
     {
         $user = User::factory()->create([
-            'password' => bcrypt('password')
+            'password' => bcrypt('password'),
         ]);
 
         $responseLogin = $this->postJson('/api/auth/login', [
             'email' => $user->email,
-            'password' => 'password'
+            'password' => 'password',
         ]);
 
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $responseLogin->json('data.access_token')
+            'Authorization' => 'Bearer '.$responseLogin->json('data.access_token'),
         ])->post('/api/auth/logout');
 
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'success',
-                'message'
+                'message',
             ]);
 
         $json = $response->json();
@@ -45,7 +45,7 @@ class LogoutTest extends TestCase
 
         $response->assertStatus(401)
             ->assertJson([
-               'success' => false,
+                'success' => false,
                 'message' => 'Unauthenticated.',
 
             ]);
@@ -54,12 +54,12 @@ class LogoutTest extends TestCase
     public function test_user_cannot_access_me_after_logout(): void
     {
         $user = User::factory()->create([
-            'password' => bcrypt('password')
+            'password' => bcrypt('password'),
         ]);
 
         $responseLogin = $this->postJson('/api/auth/login', [
             'email' => $user->email,
-            'password' => 'password'
+            'password' => 'password',
         ]);
 
         $token = $responseLogin->json('data.access_token');
@@ -68,13 +68,12 @@ class LogoutTest extends TestCase
             ->post('/api/auth/logout')
             ->assertStatus(200);
 
-
         $responseMe = $this->withToken($token)->getJson('/api/auth/me');
 
         $responseMe->assertStatus(401)
             ->assertJsonStructure([
                 'success',
-                'message'
+                'message',
             ]);
 
         $this->assertEquals(false, $responseMe->json('success'));

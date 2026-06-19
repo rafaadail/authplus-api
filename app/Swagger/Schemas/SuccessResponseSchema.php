@@ -21,9 +21,7 @@ use OpenApi\Attributes as OA;
         new OA\Property(
             property: 'data',
             type: 'object'
-        )
+        ),
     ]
 )]
-class SuccessResponseSchema
-{
-}
+class SuccessResponseSchema {}
