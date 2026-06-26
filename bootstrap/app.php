@@ -2,6 +2,8 @@
 
 use App\Exceptions\InvalidCredentialsException;
 use App\Exceptions\RefreshTokenRequiredException;
+use App\Exceptions\UserNotAuthenticatedException;
+use App\Exceptions\InvalidTokenTypeException;
 use App\Http\Middleware\Authenticate;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
@@ -114,6 +116,24 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(function (InvalidCredentialsException $e, $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ], 401);
+            }
+        });
+        
+        $exceptions->render(function (UserNotAuthenticatedException $e, $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ], 401);
+            }
+        });
+        
+        $exceptions->render(function (InvalidTokenTypeException $e, $request) {
             if ($request->is('api/*')) {
                 return response()->json([
                     'success' => false,
