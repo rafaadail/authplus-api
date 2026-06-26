@@ -13,17 +13,18 @@ The project focuses on API best practices, token-based authentication, observabi
 - **API Style:** RESTful
 - **Documentation:** OpenAPI / Swagger
 - **Logging:** Structured logs (JSON)
-- **Observability:** Request context and health checks
+- **Observability:** Request tracing, health checks, Grafana + Loki
+- **Containerization:** Docker & Docker Compose
 
 ---
 
 ## 🎯 Project Goals
 
-- Provide a secure and reliable authentication API
-- Demonstrate best practices for Laravel REST APIs
-- Apply real-world authentication patterns
-- Focus on observability and production concerns
-- Serve as a reusable authentication service
+- Provide a secure and scalable authentication API
+- Demonstrate production-grade Laravel API practices
+- Implement real-world JWT authentication flows
+- Ensure observability and traceability across requests
+- Serve as a reusable authentication microservice
 
 ---
 
@@ -39,67 +40,61 @@ The project focuses on API best practices, token-based authentication, observabi
 
 ---
 
-## 🌐 API Features
+## 🌐 API Design
 
-- RESTful endpoints
+- RESTful architecture
 - API versioning (`/api/v1`)
-- Consistent JSON responses
-- Centralized error handling
-- Proper HTTP status codes
-- Request validation
+- Standardized JSON responses
+- Centralized exception handling
+- Proper HTTP status code usage
+- Strict request validation layer
 
 ---
 
 ## 📄 API Documentation
 
-- Swagger / OpenAPI documentation
-- Bearer token authentication support
-- Request and response examples
-- Error responses documented
+- OpenAPI / Swagger specification
+- Bearer authentication support
+- Request/response examples
+- Documented error contracts
 
 ---
 
 ## 📊 Observability & Logging
 
-- Structured logs in JSON format
-- Request correlation ID
-- Context-aware logging
-- Error and warning tracking
-- Health check endpoint (`/health`)
+- Structured JSON logging
+- Correlation ID per request
+- Context-aware logs (user, request, error context)
+- Health check endpoint (/health)
+- Grafana dashboards for monitoring
+- Loki for centralized log aggregation
+- Promtail for log shipping
 
 ---
 
 ## 🧪 Testing
 
-- Unit tests for core services
+- Unit tests for domain/services
 - Feature tests for authentication flows
-- Validation of error scenarios
-- Focus on critical business logic
+- Validation of edge cases and failures
+- Focus on critical authentication paths
+- Continuous improvements in coverage
 
 ---
 
 ## 🐳 Infrastructure
 
-- Docker-ready setup
-- Environment-based configuration
-- Clear separation between code and runtime data
-
----
-
-## Observability
-
-- Grafana dashboard
-- Loki log aggregation
-- Promtail log shipping
+- Fully Dockerized environment
+- Docker Compose orchestration
+- Environment-based configuration (.env separation)
+- Stateless application design
 
 ---
 
 ## 📌 Project Status
 
-🚧 **In progress**
-
-This project is under active development.  
-Features are being implemented incrementally with a focus on code quality and best practices.
+🟢 Core authentication system completed and stable
+🚧 Active development on observability, RBAC expansion, and security hardening
 
 ---
 
