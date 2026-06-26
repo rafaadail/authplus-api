@@ -18,6 +18,7 @@ jobs:
     - uses: shivammathur/setup-php@v2
       with:
         php-version: '8.5'
+        coverage: xdebug
     - uses: actions/checkout@v4
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
@@ -35,3 +36,12 @@ jobs:
       run: php artisan jwt:secret --force
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       run: php artisan test
+    - name: Run tests with coverage
+      run: vendor/bin/phpunit --coverage-clover=coverage.xml
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        file: coverage.xml
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: true
+
