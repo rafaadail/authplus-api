@@ -3,7 +3,10 @@
 namespace App\Services;
 
 use App\Exceptions\InvalidCredentialsException;
+use App\Exceptions\InvalidTokenTypeException;
 use App\Exceptions\RefreshTokenRequiredException;
+use App\Exceptions\UserNotAuthenticatedException;
+use App\Models\User;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\JWTGuard;
@@ -12,7 +15,7 @@ class AuthService
 {
     public function __construct(private LoggerService $logger) {}
 
-    public function login(array $data)
+    public function login(array $data): array
     {
         $credentials = [
             'email' => $data['email'],
@@ -22,11 +25,6 @@ class AuthService
         $accessToken = auth('api')->attempt($credentials);
 
         if (! $accessToken) {
-
-            $this->logger->logError('auth.login.error', 'Invalid credentials', [
-                'endpoint' => '/auth/login',
-            ]);
-
             throw new InvalidCredentialsException('Invalid credentials');
         }
 
@@ -40,18 +38,9 @@ class AuthService
         return $this->buildTokenResponse($accessToken, auth('api')->user());
     }
 
-    public function me()
+    public function me(): User
     {
         $user = auth()->user();
-
-        if (! $user) {
-
-            $this->logger->logError('auth.me.error', 'User not authenticated', [
-                'endpoint' => '/auth/me',
-            ]);
-
-            throw new \Exception('User not authenticated');
-        }
 
         $this->logger->logInfo('auth.me.success', 'User retrieved successfully', [
             'endpoint' => '/auth/me',
@@ -63,23 +52,20 @@ class AuthService
 
     public function refresh($token)
     {
-        if (! $token) {
-
-            $this->logger->logError('auth.refresh.error', 'Refresh token required', [
-                'endpoint' => '/auth/refresh',
-            ]);
-
+        if (!$token) {
             throw new RefreshTokenRequiredException('Refresh token required');
         }
-
+        
         $payload = auth()->setToken($token)->getPayload();
 
         if ($payload->get('type') !== 'refresh') {
-            $this->logger->logError('auth.refresh.error', 'Invalid token type', [
-                'endpoint' => '/auth/refresh',
-            ]);
-
-            throw new \Exception('Invalid token type');
+            $this->logger->logError(
+                'auth.refresh.error',
+                'Invalid token type',
+                '/auth/refresh',
+                ['token_type' => $payload->get('type')]
+            );
+            throw new InvalidTokenTypeException('Invalid token type');
         }
 
         /** @var JWTGuard $guard */
@@ -89,10 +75,6 @@ class AuthService
         $user = $guard->setToken($token)->authenticate();
 
         $newAccessToken = $guard->login($user);
-
-        if (! $newAccessToken) {
-            throw new InvalidCredentialsException('Invalid credentials');
-        }
 
         /** @var string $newAccessToken */
         return $this->buildTokenResponse($newAccessToken, $user);
@@ -106,50 +88,35 @@ class AuthService
      *     expires_in: int
      * }
      */
-    private function buildTokenResponse(string $accessToken, $user): array
+    private function buildTokenResponse(string $accessToken, JWTSubject $user): array
     {
-        try {
-            /** @var JWTGuard $guard */
-            $guard = auth('api');
 
-            $guard->setTTL(60 * 24 * 7);
+        /** @var JWTGuard $guard */
+        $guard = auth('api');
 
-            $refreshToken = JWTAuth::claims(['type' => 'refresh'])->fromUser($user);
+        $guard->setTTL(60 * 24 * 7);
 
-            return [
-                'access_token' => $accessToken,
-                'refresh_token' => $refreshToken,
-                'token_type' => 'bearer',
-                'expires_in' => $guard->factory()->getTTL() * 60,
-            ];
+        $refreshToken = JWTAuth::claims(['type' => 'refresh'])->fromUser($user);
 
-        } catch (\Exception $e) {
-            $this->logger->logError('auth.token.error', 'Failed to generate tokens', [
-                'endpoint' => '/auth/login',
-                'user_email' => $user->email,
-            ]);
-            throw new \Exception($e->getMessage());
-        }
+        return [
+            'access_token' => $accessToken,
+            'refresh_token' => $refreshToken,
+            'token_type' => 'bearer',
+            'expires_in' => $guard->factory()->getTTL() * 60,
+        ];
     }
 
-    public function logout()
+    public function logout(): void
     {
-        try {
-            auth('api')->logout();
+        auth('api')->logout();
 
-            $this->logger->logInfo('auth.logout.success', 'User logged out successfully', [
-
+        $this->logger->logInfo(
+            'auth.logout.success',
+            'User logged out successfully',
+            [
                 'endpoint' => '/auth/logout',
                 'user_email' => auth('api')->user()->email ?? 'unknown',
-            ]);
-
-        } catch (\Exception $e) {
-
-            $this->logger->logError('auth.logout.error', 'Failed to logout user', [
-                'endpoint' => '/auth/logout',
-            ]);
-
-            throw new \Exception('Failed to logout user');
-        }
+            ]
+        );
     }
 }
